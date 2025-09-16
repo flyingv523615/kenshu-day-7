@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { openai } from '@ai-sdk/openai';
 import { generateObject } from 'ai';
 import { CharacterSchema, CharacterProfileSchema } from '@/lib/schemas/character';
+import path from 'path';
+import { mkdir, writeFile } from 'fs/promises';
+
+export const runtime = 'nodejs';
 
 
 export async function POST(req: NextRequest) {
@@ -219,7 +223,26 @@ export async function POST(req: NextRequest) {
 
   console.log('[character API] received name:', name);
 
-  return NextResponse.json(response.object);
+  // Save result JSON to src/datas
+  try {
+    const datasDir = path.join(process.cwd(), 'src', 'datas');
+    await mkdir(datasDir, { recursive: true });
+    const slug = name
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-_]/g, '_')
+      .slice(0, 60);
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const fileName = `${timestamp}_${slug || 'character'}.json`;
+    const filePath = path.join(datasDir, fileName);
+    await writeFile(filePath, JSON.stringify(response.object, null, 2) + '\n', 'utf-8');
+    return NextResponse.json({ ...response.object, savedFile: fileName });
+  } catch (err) {
+    console.error('[character API] failed to save JSON:', err);
+    // Even if saving fails, return the generated object
+    return NextResponse.json(response.object);
+  }
 }
 
 

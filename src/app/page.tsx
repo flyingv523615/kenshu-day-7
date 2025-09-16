@@ -6,6 +6,7 @@ import { Input } from "@ui/input"
 import { Button } from "@ui/button"
 import { Alert, AlertDescription } from "@ui/alert"
 import { Card, CardContent, CardHeader, CardTitle } from "@ui/card"
+import Link from "next/link"
 import CharacterProfileView from "@/components/character/character-profile-view"
 import type { CharacterProfile, CharacterNameInput } from "@/lib/schemas/character"
 
@@ -65,6 +66,9 @@ export default function Home() {
                 {loading ? "生成中..." : "生成"}
               </Button>
               <Button type="button" variant="secondary" disabled={loading} onClick={() => { setName(""); setProfile(null); setError(null); }}>クリア</Button>
+              <Button variant="outline" asChild>
+                <Link href="/list">履歴一覧</Link>
+              </Button>
             </div>
             {error && (
               <Alert variant="destructive">

@@ -314,7 +314,8 @@ export async function POST(req: NextRequest) {
     model: openai('gpt-5'),
     system: systemPrompt,
     prompt: name,
-    schema: CharacterProfileSchema
+    schema: CharacterProfileSchema,
+    reasoning: { effort: 'low' }
   });
 
   console.log(response.object);

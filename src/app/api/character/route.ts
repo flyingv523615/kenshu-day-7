@@ -227,14 +227,8 @@ export async function POST(req: NextRequest) {
   try {
     const datasDir = path.join(process.cwd(), 'src', 'datas');
     await mkdir(datasDir, { recursive: true });
-    const slug = name
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, '-')
-      .replace(/[^a-z0-9-_]/g, '_')
-      .slice(0, 60);
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const fileName = `${timestamp}_${slug || 'character'}.json`;
+    const fileName = `${timestamp}.json`;
     const filePath = path.join(datasDir, fileName);
     await writeFile(filePath, JSON.stringify(response.object, null, 2) + '\n', 'utf-8');
     return NextResponse.json({ ...response.object, savedFile: fileName });

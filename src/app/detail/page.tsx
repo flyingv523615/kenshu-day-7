@@ -7,11 +7,11 @@ import type { CharacterProfile } from "@/lib/schemas/character"
 export const runtime = 'nodejs'
 
 type DetailPageProps = {
-  searchParams: { file?: string }
+  searchParams: Promise<{ file?: string }>
 }
 
 export default async function DetailPage({ searchParams }: DetailPageProps) {
-  const file = searchParams?.file
+  const { file } = await searchParams
 
   if (!file || !/^[\w\-]+\.json$/.test(file)) {
     return (
